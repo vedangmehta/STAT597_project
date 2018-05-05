@@ -1,13 +1,17 @@
+# Importing the libraries
 library(tidyverse)
 
+# Fetches words from a string
 get_words <- function(s){
   return(strsplit(tolower(s), "[ |\-|:|,]+")[[1]] %>% setdiff(stopwords::stopwords(language = "en")))
 }
 
+# Checks if two vectors have any similar elements
 check_for_similarity <- function(x, y){
-  return(ifelse(length(intersect(x, y)) >= 1, TRUE, FALSE)
+  return(ifelse(length(intersect(x, y)) >= 1, TRUE, FALSE))
 }
 
+# Checks whether the movie at index i is a sequel of the movie at index (i - 1) or not
 is_sequel <- function(index){
   if(ls$Year[index] < ls$Year[index - 1]){
     return(FALSE)
@@ -24,22 +28,19 @@ is_sequel <- function(index){
   return(ifelse(title_sim + actor_sim + director_sim + production_sim + genre_sim + rated_sim >= 3, TRUE, FALSE))
 }
 
+# Reading the dataset
 df <- read_csv("movie_data_new.csv") %>% select(Title, Year, Rated, Director, Production, Actors, Genres) %>% na.omit()
 
 ls <- as.list(df)
 cur <- c(ls$Title[1])
-# file_conn<-file("output.txt")
 
+# Writing movies from the same franchise on the same line separated by a tabspace
 for(index in 2:length(ls$Title)){
   if(is_sequel(index)){
     cur <- c(cur, ls$Title[index])
   }
   else{
-    # cat(paste(cur, "\t"))
-    # cat("\n")
     write(paste(cur, collapse = "\t"), file = "output.txt", append = TRUE, sep = "\t")
     cur <- c(ls$Title[index])
   }
 }
-
-# close(file_conn)

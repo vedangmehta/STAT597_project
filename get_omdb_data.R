@@ -1,3 +1,4 @@
+# Importing the libraries
 library(httr)
 library(curl)
 library(jsonlite)
@@ -5,6 +6,7 @@ library(tidyverse)
 
 API_KEY = "1ee0b287"
 
+# Function to fetch OMDb data from title
 fetch_omdb_data <- function(title, API_KEY) {
   url <-
     paste0("http://www.omdbapi.com/?t=",
@@ -41,6 +43,7 @@ fetch_omdb_data <- function(title, API_KEY) {
   return(movie_data)
 }
 
+# Function to get box-office collection from IMDb.
 fetch_box_office <- function(imdbID) {
   url <- paste0("https://www.imdb.com/title/", imdbID)
   if (url %>% read_html() %>% html_nodes(".txt-block") %>% str_detect("Cumulative") %>% any()) {
@@ -52,6 +55,7 @@ fetch_box_office <- function(imdbID) {
   return(box_office)
 }
 
+# This function was just for some debugging. Not really important.
 fetch_omdb_data2 <- function(title, API_KEY) {
   url <-
     paste0("http://www.omdbapi.com/?t=",
@@ -60,28 +64,13 @@ fetch_omdb_data2 <- function(title, API_KEY) {
            API_KEY)
   json_result <- url %>% curl() %>% readLines() %>% fromJSON()
   return(json_result)
-  # movie_data <- list()
-  # # attribute_list <- c("Title", "Year", "Plot", "Rated", "Director", "Awards", "Metascore", "imdbRating", "BoxOffice", "Production")
-  # movie_data$Title <- json_result$Title
-  # movie_data$Year <- as.integer(json_result$Year)
-  # movie_data$Plot <- json_result$Plot
-  # movie_data$Rated <- json_result$Rated
-  # movie_data$Director <- json_result$Director
-  # movie_data$Awards <- json_result$Awards
-  # movie_data$Metascore <- json_result$Metascore
-  # movie_data$imdbRating <- json_result$imdbRating
-  # movie_data$Boxoffice <- json_result$Boxoffice
-  # movie_data$Production <- json_result$Production
-  # movie_data$Actors <- str_trim(str_split(json_result$Actors, ",")[[1]])
-  # movie_data$Genre <- str_trim(str_split(json_result$Genre, ",")[[1]])
-  # movie_data$Runtime <- as.integer(str_extract(json_result$Runtime, "\\d+"))
-  # return(movie_data)
 }
 
 ls <- c()
 index <- 1
 movie_errors <- c()
 
+# Fetching info for all the movies in "list_of_movies.txt"
 for (movie_name in readLines(file("list_of_movies.txt"))) {
   flag = FALSE
   tryCatch({
@@ -116,6 +105,7 @@ for (movie_name in readLines(file("list_of_movies.txt"))) {
   }
 }
 
+# Tidying up the data and writing to a CSV file
 df <-
   as.tibble(matrix(unlist(ls), nrow = length(ls) / 15, byrow = T), stringsAsFactors =
               FALSE)

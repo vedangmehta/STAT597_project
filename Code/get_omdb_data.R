@@ -1,3 +1,5 @@
+# This code snippet is to get data using the OMDb API.
+
 # Importing the libraries
 library(httr)
 library(curl)

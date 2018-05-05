@@ -1,3 +1,5 @@
+# This code snippet is to identify the movies that belong to the same franchise.
+
 # Importing the libraries
 library(tidyverse)
 

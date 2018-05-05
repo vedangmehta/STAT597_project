@@ -1,3 +1,5 @@
+# This code snippet is to visualize the data.
+
 # Importing the libraries
 library(tidyverse)
 library(ggthemes)
